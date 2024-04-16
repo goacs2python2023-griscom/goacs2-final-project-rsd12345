@@ -1,6 +1,7 @@
 import csv
 from math import pi
 import pandas as pd
+import numpy as np
 
 from bokeh.plotting import figure, show
 from bokeh.palettes import Category20c
@@ -45,9 +46,6 @@ for weatherEvent in atlantic_list:
     elif weatherEvent[5].strip() == "TS":
         atlantic_dict["Typhoon"] += 1
 
-print(atlantic_dict["Hurricane"])
-print(atlantic_dict["Typhoon"])
-print("__________")
 atlantic_data = pd.Series(atlantic_dict).reset_index(name="value").rename(columns={"index":"type"})
 atlantic_data["angle"] = atlantic_data["value"]/atlantic_data["value"].sum() * 2 * pi
 atlantic_data["color"] = chart_colors[:len(atlantic_dict)]
@@ -72,9 +70,6 @@ for weatherEvent in pacific_list:
     elif weatherEvent[5].strip() == "TS":
         pacific_dict["Typhoon"] += 1
 
-print(pacific_dict["Hurricane"])
-print(pacific_dict["Typhoon"])
-
 pacific_data = pd.Series(pacific_dict).reset_index(name="value").rename(columns={"index":"type"})
 pacific_data["angle"] = pacific_data["value"]/pacific_data["value"].sum() * 2 * pi
 pacific_data["color"] = chart_colors[:len(pacific_dict)]
@@ -87,5 +82,27 @@ pacific_pie.axis.axis_label = None
 pacific_pie.axis.visible = False
 pacific_pie.grid.grid_line_color = None
 
+#max wind histograms
 
-show(row(atlantic_pie, pacific_pie))
+#atlantic
+
+atlantic_winds = []
+
+for weatherEvent in atlantic_list:
+    atlantic_winds.append(weatherEvent[8])
+
+atlantic_hist = figure(width=670, height=400, toolbar_location=None,
+           title="Atlantic Max Winds")
+# Histogram
+bins = np.linspace(-3, 3, 40)
+hist, edges = np.histogram(atlantic_winds, density=True, bins=bins)
+atlantic_hist.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
+         fill_color="green", line_color="white")
+         #legend_label="1000 random samples")
+
+
+
+
+
+
+show(row(atlantic_pie, pacific_pie, atlantic_hist))
