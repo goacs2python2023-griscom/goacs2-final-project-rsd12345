@@ -66,7 +66,6 @@ for weatherEvent in pacific_list:
     pacific_winds += int(weatherEvent[8])
 
 average_winds.append(pacific_winds/(len(pacific_list)+1))
-print(average_winds)
 
 bar_graph = figure(x_range=oceans, title="Atlantic vs Pacific Average Max Winds", x_axis_label="Ocean", y_axis_label="Average Wind (MPH)")
 bar_graph.vbar(x=oceans, top=average_winds, width=0.5)
